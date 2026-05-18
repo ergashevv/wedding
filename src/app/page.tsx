@@ -226,9 +226,7 @@ export default function WeddingInvitation() {
                   </>
                 ) : (
                   <>
-                    {isPlural ? "Sizlarni" : "Sizni"} aziz farzandlarimiz Javoxir va Sevinchning nikoh to&apos;ylari munosabati bilan
-                    bo&apos;lib o&apos;tadigan visol oqshomiga taklif etamiz. Quvonchli kunimizda
-                    hurmat va ehtirom ila kutib qolamiz.
+                    {isPlural ? "Sizlarni" : "Sizni"} aziz farzandlarimiz Javoxir va Sevinchlarning nikoh to&apos;ylari munosabati bilan 2026-yil 30-may kuni soat 18:00 da bo&apos;lib o&apos;tadigan Visol oqshomi kechamizda kutib qolamiz.
                   </>
                 )}
               </p>
@@ -238,7 +236,7 @@ export default function WeddingInvitation() {
               <div className="signature">
                 <div className="signature-label">Hurmat va ehtirom ila</div>
                 <div className="signature-name">
-                  {isCouple ? "Abdumalikovlar oilasi" : "Yalgashevlar oilasi"}
+                  {isCouple ? "Abdumalikovlar oilasi" : "Asomiddin Yalgashevlar oilasi"}
                 </div>
               </div>
             </div>
@@ -355,7 +353,7 @@ export default function WeddingInvitation() {
                 <div className="venue-info">
                   <div className="venue-name">&ldquo;Shams&rdquo; to&apos;yxonasi</div>
                   <p className="venue-address">
-                    Toshkent viloyati, Olmaliq tumani,
+                    Toshkent viloyati, Qibray tumani,
                     <br />
                     Baytqo&apos;rg&apos;on
                   </p>
