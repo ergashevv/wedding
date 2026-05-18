@@ -224,7 +224,7 @@ export default function WeddingInvitation() {
                   </>
                 ) : (
                   <>
-                    {isPlural ? "Sizlarni" : "Sizni"} aziz farzandlarimiz Javoxir va Sevinchlarning nikoh to&apos;ylari munosabati bilan 2026-yil 30-may kuni soat 18:00 da bo&apos;lib o&apos;tadigan Visol oqshomi kechamizda kutib qolamiz.
+                    {isPlural ? "Sizlarni" : "Sizni"} aziz farzandlarimiz Javoxir va Sevinchlarning nikoh to&apos;ylari munosabati bilan bo&apos;lib o&apos;tadigan visol oqshomiga taklif etamiz. Quvonchli kunimizda hurmat va ehtirom ila kutib qolamiz.
                   </>
                 )}
               </p>
