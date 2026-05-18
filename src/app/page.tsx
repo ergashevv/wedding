@@ -94,12 +94,16 @@ export default function WeddingInvitation() {
         console.log("Audio auto-play blocked by browser. Triggerable via floating button.", e);
       });
     }
+
+    // Automatically transition to the portal after 1.3 seconds gorgeous 3D envelope animation
+    setTimeout(() => {
+      setPortalRevealed(true);
+    }, 1300);
   };
 
-  // Transition from envelope to full invitation portal
+  // Transition from envelope to full invitation portal immediately if clicked again
   const handleEnterPortal = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!envelopeOpened) return;
     setPortalRevealed(true);
   };
 
@@ -188,7 +192,7 @@ export default function WeddingInvitation() {
         </div>
 
         <p className="open-text">
-          {!envelopeOpened ? "Ochish uchun bosing" : "Kirish uchun yuqoridagi kartani bosing"}
+          {!envelopeOpened ? "Ochish uchun bosing" : "Taklifnoma ochilmoqda..."}
         </p>
       </div>
 
