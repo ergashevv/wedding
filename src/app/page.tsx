@@ -35,6 +35,22 @@ export default function WeddingInvitation() {
   const [opened, setOpened] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [time, setTime] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isCouple, setIsCouple] = useState(true);
+  const [guestName, setGuestName] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const v = params.get("v") || params.get("type") || "";
+      if (["parents", "p", "2", "yalgashev", "yalgashevlar", "farzandlarimiz", "y"].includes(v.toLowerCase())) {
+        setIsCouple(false);
+      }
+      const name = params.get("to") || params.get("name") || "";
+      if (name) {
+        setGuestName(name.trim());
+      }
+    }
+  }, []);
 
   // Petals — generated once
   const petals = useMemo<Petal[]>(() => {
@@ -156,7 +172,9 @@ export default function WeddingInvitation() {
             </div>
 
             <div className="reveal d1">
-              <div className="eyebrow">Bizning to&apos;yimiz</div>
+              <div className="eyebrow">
+                {isCouple ? "Bizning to'yimiz" : "Bizning farzandlarimiz to'yi"}
+              </div>
             </div>
 
             <div className="reveal d2">
@@ -177,21 +195,41 @@ export default function WeddingInvitation() {
 
             <div className="reveal d3">
               <div className="hero-greeting">Assalomu alaykum!</div>
-              <div className="hero-lead">Hurmatli mehmonlar</div>
+              <div className="hero-lead">
+                {guestName ? (
+                  <>
+                    Hurmatli <span className="highlight-name">{guestName}</span>
+                  </>
+                ) : (
+                  "Hurmatli mehmonlar"
+                )}
+              </div>
             </div>
 
             <div className="reveal d4">
               <p className="hero-body">
-                Sizni aziz farzandlarimiz Javoxir va Sevinchning nikoh to&apos;ylari munosabati bilan
-                bo&apos;lib o&apos;tadigan visol oqshomiga taklif etamiz. Quvonchli kunimizda
-                hurmat va ehtirom ila kutib qolamiz.
+                {isCouple ? (
+                  <>
+                    Sizni nikoh to&apos;yimiz munosabati bilan bo&apos;lib o&apos;tadigan
+                    visol oqshomiga taklif etamiz. Quvonchli kunimizda hurmat va ehtirom
+                    ila kutib qolamiz.
+                  </>
+                ) : (
+                  <>
+                    Sizni aziz farzandlarimiz Javoxir va Sevinchning nikoh to&apos;ylari munosabati bilan
+                    bo&apos;lib o&apos;tadigan visol oqshomiga taklif etamiz. Quvonchli kunimizda
+                    hurmat va ehtirom ila kutib qolamiz.
+                  </>
+                )}
               </p>
             </div>
 
             <div className="reveal d4">
               <div className="signature">
                 <div className="signature-label">Hurmat va ehtirom ila</div>
-                <div className="signature-name">Yangashevlar oilasi</div>
+                <div className="signature-name">
+                  {isCouple ? "Abdumalikovlar oilasi" : "Yalgashevlar oilasi"}
+                </div>
               </div>
             </div>
 
