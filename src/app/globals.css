@@ -1,27 +1,27 @@
+/* Curated Light & Bright Ivory-Gold Theme System for Wedding Invitation */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --color-ivory: #faf8f5;
+  --color-pearl: #ffffff;
+  --color-cream-light: #fdfdfb;
+  --color-cream-dark: #f5eedf;
+  
+  /* Rich high-contrast text color for perfect readability */
+  --color-text-primary: #1e120a;
+  --color-text-secondary: #5a4a40;
+  
+  --color-gold-primary: #c5a059;
+  --color-gold-light: #f3e5ab;
+  --color-gold-dark: #8e6d2f;
+  --color-wax-red: #8b1e0f;
+  
+  --font-serif: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  --font-sans: var(--font-montserrat), 'Montserrat', sans-serif;
+  --font-cursive: var(--font-great-vibes), 'Great Vibes', cursive;
+  
+  --shadow-gold: 0 4px 15px rgba(197, 160, 89, 0.15);
+  --shadow-premium: 0 10px 30px rgba(45, 31, 23, 0.05);
+  --border-gold-thin: 1px solid rgba(197, 160, 89, 0.4);
+  --border-gold-double: 3px double rgba(197, 160, 89, 0.7);
 }
 
 * {
@@ -30,13 +30,778 @@ body {
   margin: 0;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--color-ivory);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ivory);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold-primary);
+  border-radius: 3px;
+}
+
+/* Typography styles with extremely high readability */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--color-text-primary);
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatParticles {
+  0% {
+    transform: translateY(100vh) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-20vh) translateX(40px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pulseGold {
+  0% {
+    box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(197, 160, 89, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(197, 160, 89, 0);
+  }
+}
+
+@keyframes pulseBorder {
+  0%, 100% { border-color: rgba(197, 160, 89, 0.4); }
+  50% { border-color: rgba(197, 160, 89, 0.9); }
+}
+
+@keyframes floatSoft {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(0.5deg); }
+}
+
+@keyframes bounceSoft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Intersection Observer Scroll Reveal System */
+.reveal {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.15s; }
+.reveal-delay-2 { transition-delay: 0.3s; }
+.reveal-delay-3 { transition-delay: 0.45s; }
+
+/* Interactive Envelope Overlay in Light-Cream Aesthetic */
+.envelope-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #f5eedf;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1.2s cubic-bezier(0.85, 0, 0.15, 1), visibility 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+  overflow: hidden;
+}
+
+.envelope-overlay.opened {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Ambient Particles */
+.ambient-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  bottom: -20px;
+  background: radial-gradient(circle, var(--color-gold-light) 0%, rgba(197, 160, 89, 0.05) 75%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Luxury Invitation Cover Overlay (Light, Bright & Pure Elegance) */
+.envelope-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #faf6ee; /* Warm elegant ivory silk */
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 55px 24px;
+  transition: opacity 1.2s cubic-bezier(0.85, 0, 0.15, 1), visibility 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+  overflow: hidden;
+}
+
+/* Elegant Outer Double Frame on the Cover */
+.envelope-overlay::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  border: 1px solid rgba(197, 160, 89, 0.4);
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.envelope-overlay::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  border: 2px double rgba(197, 160, 89, 0.7);
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.cover-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  width: 100%;
+  z-index: 3;
+  text-align: center;
+}
+
+/* Beautiful Elegant Wreath Crest in the Center */
+.cover-crest {
+  width: 110px;
+  height: 110px;
+  border: 1px solid rgba(197, 160, 89, 0.45);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 25px;
+  background-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 15px rgba(197, 160, 89, 0.04);
+}
+
+.cover-crest::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border: 1px dashed rgba(197, 160, 89, 0.35);
+  border-radius: 50%;
+}
+
+.cover-crest-initials {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 300;
+  color: var(--color-gold-dark);
+  letter-spacing: 0.05em;
+}
+
+.cover-title {
+  font-family: var(--font-cursive);
+  font-size: 4.8rem;
+  color: var(--color-gold-primary);
+  line-height: 1.1;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.cover-names {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-text-primary);
+  margin-top: 15px;
+}
+
+.cover-date {
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Elegant Pulsing Open Button */
+.cover-open-btn {
+  background-color: var(--color-pearl);
+  border: 1px solid var(--color-gold-primary);
+  color: var(--color-text-primary);
+  padding: 16px 40px;
+  border-radius: 30px;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(197, 160, 89, 0.12);
+  transition: all 0.3s ease;
+  animation: pulseGold 2.2s infinite;
+  z-index: 3;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.cover-open-btn:hover {
+  transform: translateY(-2px);
+  background-color: var(--color-gold-primary);
+  color: #ffffff;
+  box-shadow: 0 8px 25px rgba(197, 160, 89, 0.25);
+}
+
+.cover-open-btn:active {
+  transform: translateY(1px);
+}
+
+.open-text {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  opacity: 0.8;
+  margin-top: 10px;
+  z-index: 3;
+}
+
+/* Audio Player Floating Button - Bright Mode */
+.audio-player-floating {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  background-color: var(--color-pearl);
+  border: 1px solid var(--color-gold-primary);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-gold);
+  transition: all 0.3s ease;
+}
+
+.audio-player-floating:hover {
+  transform: scale(1.05);
+}
+
+.audio-player-floating.muted {
+  border-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--color-pearl);
+}
+
+.equalizer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 15px;
+  height: 15px;
+}
+
+.equalizer-bar {
+  width: 2px;
+  background-color: var(--color-gold-primary);
+  height: 4px;
+  animation: equalize 1s ease-in-out infinite alternate;
+}
+
+.equalizer-bar:nth-child(1) { animation-delay: 0.1s; height: 11px; }
+.equalizer-bar:nth-child(2) { animation-delay: 0.3s; height: 5px; }
+.equalizer-bar:nth-child(3) { animation-delay: 0.5s; height: 15px; }
+.equalizer-bar:nth-child(4) { animation-delay: 0.2s; height: 7px; }
+
+.muted .equalizer-bar {
+  animation: none !important;
+  height: 2px !important;
+  background-color: var(--color-text-secondary);
+  opacity: 0.5;
+}
+
+@keyframes equalize {
+  0% { height: 2px; }
+  100% { height: 15px; }
+}
+
+/* Main Layout Structure */
+.section {
+  position: relative;
+  width: 100%;
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Elegant Borders & Floral Dividers */
+.floral-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0 25px 0;
+  width: 100%;
+  max-width: 260px;
+}
+
+.floral-line {
+  flex-grow: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(197,160,89,0) 0%, rgba(197,160,89,0.6) 50%, rgba(197,160,89,0) 100%);
+}
+
+.floral-center {
+  margin: 0 12px;
+  color: var(--color-gold-primary);
+  font-size: 1.1rem;
+}
+
+/* Premium Physical Card Frame Recreate (Light & Beautiful) */
+.gold-border-frame {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  background-color: var(--color-pearl);
+  border: 1px solid rgba(197, 160, 89, 0.25);
+  padding: 55px 35px;
+  border-radius: 16px;
+  box-shadow: 0 15px 45px rgba(45, 31, 23, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Inner repeating gold pattern simulation */
+.gold-border-frame::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid var(--color-gold-primary);
+  border-radius: 12px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* Double gold border on the inside */
+.gold-border-frame::after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  border: 2px double var(--color-gold-primary);
+  border-radius: 10px;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Corner scroll decorations */
+.card-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--color-gold-primary);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.corner-tl { top: 22px; left: 22px; border-right: 0; border-bottom: 0; }
+.corner-tr { top: 22px; right: 22px; border-left: 0; border-bottom: 0; }
+.corner-bl { bottom: 22px; left: 22px; border-right: 0; border-top: 0; }
+.corner-br { bottom: 22px; right: 22px; border-left: 0; border-top: 0; }
+
+/* Hero Card Styles (Welcome) */
+.hero-section {
+  min-height: 100vh;
+  background-color: var(--color-ivory);
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+.hero-subtitle {
+  font-family: var(--font-cursive);
+  font-size: 3.2rem;
+  color: var(--color-gold-dark);
+  margin-bottom: 5px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.hero-guest-title {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.couple-names-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 25px 0;
+}
+
+.couple-name {
+  font-family: var(--font-serif);
+  font-size: 3.8rem;
+  color: var(--color-text-primary);
+  font-weight: 400;
+  line-height: 1.05;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 3px rgba(197, 160, 89, 0.1);
+}
+
+.couple-ampersand {
+  font-family: var(--font-cursive);
+  font-size: 3.2rem;
+  color: var(--color-gold-primary);
+  margin: 8px 0;
+}
+
+/* Invitation Main Card Text (High Legibility) */
+.invite-text {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  line-height: 1.9;
+  color: var(--color-text-primary);
+  margin: 15px 0;
+  text-align: center;
+  font-weight: 400;
+}
+
+.invite-text strong {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.respect-block {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
+
+.respect-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.respect-value {
+  font-family: var(--font-serif);
+  font-size: 1.55rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+/* Venue Location Section styling (Light & Aesthetic) */
+.venue-title {
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  margin-bottom: 5px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.venue-card {
+  width: 100%;
+  max-width: 580px;
+  background-color: var(--color-pearl);
+  border: 1px solid rgba(197, 160, 89, 0.25);
+  border-radius: 16px;
+  padding: 30px 24px;
+  box-shadow: 0 10px 40px rgba(45, 31, 23, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.venue-name {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.venue-address {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 440px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* Responsive Yandex Iframe Widget Container */
+.yandex-map-responsive {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(197, 160, 89, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 25px;
+}
+
+.yandex-map-responsive iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Modern Yandex Nav App Trigger Button - Beautiful Gold/Ivory Wedding Theme */
+.yandex-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--color-pearl);
+  border: 1px solid var(--color-gold-primary);
+  color: var(--color-text-primary);
+  padding: 16px 20px;
+  border-radius: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 12px rgba(197, 160, 89, 0.08);
+  text-align: center;
+}
+
+.yandex-nav-btn:hover {
+  transform: translateY(-2px);
+  background-color: var(--color-gold-primary);
+  color: var(--color-pearl);
+  box-shadow: 0 8px 20px rgba(197, 160, 89, 0.25);
+}
+
+.yandex-nav-btn:active {
+  transform: translateY(1px);
+}
+
+.yandex-nav-btn-icon {
+  width: 20px;
+  height: 20px;
+  fill: var(--color-gold-primary);
+  transition: fill 0.3s ease;
+}
+
+.yandex-nav-btn:hover .yandex-nav-btn-icon {
+  fill: var(--color-pearl);
+}
+
+/* Footer Styling */
+.footer {
+  background-color: #f7f3eb;
+  color: var(--color-text-primary);
+  padding: 60px 20px 80px 20px;
+  text-align: center;
+  border-top: 1px solid rgba(197, 160, 89, 0.15);
+}
+
+.footer-names {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.footer-tagline {
+  font-family: var(--font-cursive);
+  font-size: 1.8rem;
+  color: var(--color-gold-dark);
+  margin-bottom: 12px;
+}
+
+.footer-copyright {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+  margin-top: 25px;
+}
+
+/* MOBILE RESPONSIVE OPTIMIZATIONS (CRITICAL FOCUS) */
+@media (max-width: 480px) {
+  .section {
+    padding: 65px 16px;
+  }
+  
+  .gold-border-frame {
+    padding: 45px 20px;
+  }
+  
+  .gold-border-frame::before {
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    border-radius: 10px;
+  }
+
+  .gold-border-frame::after {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border-radius: 8px;
+  }
+  
+  .card-corner {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .corner-tl { top: 16px; left: 16px; }
+  .corner-tr { top: 16px; right: 16px; }
+  .corner-bl { bottom: 16px; left: 16px; }
+  .corner-br { bottom: 16px; right: 16px; }
+
+  .hero-subtitle {
+    font-size: 2.6rem;
+  }
+  
+  .hero-guest-title {
+    font-size: 1.35rem;
+    letter-spacing: 0.1em;
+  }
+  
+  .couple-name {
+    font-size: 3rem;
+  }
+  
+  .couple-ampersand {
+    font-size: 2.6rem;
+  }
+  
+  .invite-text {
+    font-size: 1.18rem;
+    line-height: 1.8;
+  }
+  
+  .respect-value {
+    font-size: 1.35rem;
+  }
+  
+  .yandex-map-responsive {
+    height: 300px;
+  }
+  
+  .yandex-nav-btn {
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+  
+  .audio-player-floating {
+    bottom: 20px;
+    right: 20px;
+    width: 42px;
+    height: 42px;
   }
 }
