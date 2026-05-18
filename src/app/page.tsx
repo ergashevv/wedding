@@ -153,12 +153,6 @@ export default function WeddingInvitation() {
           ))}
         </div>
 
-        {/* Calligraphy Header Above the Envelope */}
-        <div className="envelope-header-3d">
-          <h1>{"Taklifnoma"}</h1>
-          <p>{"Javohir & Sevinch"}</p>
-        </div>
-
         {/* 3D Realistic Physical Envelope Container */}
         <div
           className={`envelope-wrapper ${envelopeOpened ? "opened" : ""}`}
