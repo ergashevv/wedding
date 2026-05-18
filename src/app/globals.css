@@ -818,6 +818,26 @@ body {
   color: var(--ink-mute);
 }
 
+.credit {
+  margin-top: 18px;
+  font-size: 0.65rem;
+  color: var(--ink-mute);
+  opacity: 0.75;
+  letter-spacing: 0.04em;
+}
+.credit-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--gold-deep);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color .25s var(--ease), opacity .25s var(--ease);
+}
+.credit-link:hover { color: var(--gold); opacity: 1; }
+.credit-link svg { width: 11px; height: 11px; }
+.credit-link span { letter-spacing: 0.02em; }
+
 /* =====================================================
    AUDIO TOGGLE
    ===================================================== */
