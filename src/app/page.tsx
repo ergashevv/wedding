@@ -149,12 +149,7 @@ export default function WeddingInvitation() {
         <div className={`envelope ${opened ? "open" : ""}`}>
           <div className="env-body" />
           <div className="env-card">
-            <div
-              className="env-card-script"
-              style={guestName.length > 15 ? { fontSize: "1.2rem" } : {}}
-            >
-              {guestName ? guestName : "Sizga"}
-            </div>
+            <div className="env-card-script">Sizga</div>
             <div className="env-card-names">Javoxir &amp; Sevinch</div>
             <div className="env-card-meta">30 · 05 · 2026</div>
           </div>
