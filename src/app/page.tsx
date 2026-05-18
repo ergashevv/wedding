@@ -38,6 +38,11 @@ export default function WeddingInvitation() {
   const [isCouple, setIsCouple] = useState(true);
   const [guestName, setGuestName] = useState("");
 
+  const isPlural = guestName.toLowerCase().includes("oila") || 
+                   guestName.toLowerCase().includes("va ") || 
+                   guestName.toLowerCase().includes("&") ||
+                   guestName.toLowerCase().includes("bilan");
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -144,7 +149,12 @@ export default function WeddingInvitation() {
         <div className={`envelope ${opened ? "open" : ""}`}>
           <div className="env-body" />
           <div className="env-card">
-            <div className="env-card-script">Sizga</div>
+            <div
+              className="env-card-script"
+              style={guestName.length > 15 ? { fontSize: "1.2rem" } : {}}
+            >
+              {guestName ? guestName : "Sizga"}
+            </div>
             <div className="env-card-names">Javoxir &amp; Sevinch</div>
             <div className="env-card-meta">30 · 05 · 2026</div>
           </div>
@@ -210,13 +220,13 @@ export default function WeddingInvitation() {
               <p className="hero-body">
                 {isCouple ? (
                   <>
-                    Sizni nikoh to&apos;yimiz munosabati bilan bo&apos;lib o&apos;tadigan
+                    {isPlural ? "Sizlarni" : "Sizni"} nikoh to&apos;yimiz munosabati bilan bo&apos;lib o&apos;tadigan
                     visol oqshomiga taklif etamiz. Quvonchli kunimizda hurmat va ehtirom
                     ila kutib qolamiz.
                   </>
                 ) : (
                   <>
-                    Sizni aziz farzandlarimiz Javoxir va Sevinchning nikoh to&apos;ylari munosabati bilan
+                    {isPlural ? "Sizlarni" : "Sizni"} aziz farzandlarimiz Javoxir va Sevinchning nikoh to&apos;ylari munosabati bilan
                     bo&apos;lib o&apos;tadigan visol oqshomiga taklif etamiz. Quvonchli kunimizda
                     hurmat va ehtirom ila kutib qolamiz.
                   </>
