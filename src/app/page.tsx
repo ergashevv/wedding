@@ -218,7 +218,15 @@ export default function WeddingInvitation() {
 
             <div className="reveal d4">
               <p className="hero-body">
-                {isPlural ? "Sizlarni" : "Sizni"} aziz farzandlarimiz Javoxir va Sevinchlarning nikoh to&apos;ylari munosabati bilan 2026-yil 30-may kuni soat 18:00 da bo&apos;lib o&apos;tadigan Visol oqshomi kechamizda kutib qolamiz.
+                {isCouple ? (
+                  <>
+                    {isPlural ? "Sizlarni" : "Sizni"} nikoh to&apos;yimiz munosabati bilan bo&apos;lib o&apos;tadigan visol oqshomiga taklif etamiz. Quvonchli kunimizda hurmat va ehtirom ila kutib qolamiz.
+                  </>
+                ) : (
+                  <>
+                    {isPlural ? "Sizlarni" : "Sizni"} aziz farzandlarimiz Javoxir va Sevinchlarning nikoh to&apos;ylari munosabati bilan 2026-yil 30-may kuni soat 18:00 da bo&apos;lib o&apos;tadigan Visol oqshomi kechamizda kutib qolamiz.
+                  </>
+                )}
               </p>
             </div>
 
