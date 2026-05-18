@@ -1,353 +1,379 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
-interface Particle {
+// Wedding date: 30 May 2026, 18:00 (Tashkent time, UTC+5)
+const WEDDING_DATE = new Date("2026-05-30T18:00:00+05:00").getTime();
+
+interface Petal {
   id: number;
   left: number;
   size: number;
   delay: number;
   duration: number;
+  drift: number;
+  gold: boolean;
+}
+
+interface TimeLeft {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+function getTimeLeft(): TimeLeft {
+  const diff = Math.max(0, WEDDING_DATE - Date.now());
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+  return { days, hours, minutes, seconds };
 }
 
 export default function WeddingInvitation() {
-  // Application states
-  const [envelopeOpened, setEnvelopeOpened] = useState<boolean>(false);
-  const [portalRevealed, setPortalRevealed] = useState<boolean>(false);
-  const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
-  const [ambientParticles, setAmbientParticles] = useState<Particle[]>([]);
+  const [opened, setOpened] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const [time, setTime] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  // Audio reference
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Generate gold particles once mounted
-  useEffect(() => {
-    const particlesArray: Particle[] = Array.from({ length: 20 }).map((_, i) => ({
+  // Petals — generated once
+  const petals = useMemo<Petal[]>(() => {
+    return Array.from({ length: 22 }).map((_, i) => ({
       id: i,
-      left: Math.random() * 100, // percentage
-      size: Math.random() * 4 + 2, // 2px to 6px
-      delay: Math.random() * 8, // delay up to 8s
-      duration: Math.random() * 10 + 12, // 12s to 22s
+      left: Math.random() * 100,
+      size: Math.random() * 8 + 6,
+      delay: Math.random() * 12,
+      duration: Math.random() * 10 + 14,
+      drift: (Math.random() - 0.5) * 120,
+      gold: Math.random() > 0.55,
     }));
-    setAmbientParticles(particlesArray);
   }, []);
 
-  // Initialize IntersectionObserver for smooth scroll animations on the main page
+  // Countdown
   useEffect(() => {
-    if (!portalRevealed) return;
+    setTime(getTimeLeft());
+    const id = setInterval(() => setTime(getTimeLeft()), 1000);
+    return () => clearInterval(id);
+  }, []);
 
-    const timeout = setTimeout(() => {
-      const revealElements = document.querySelectorAll(".reveal");
-      
-      const observer = new IntersectionObserver(
+  // Scroll reveal
+  useEffect(() => {
+    if (!revealed) return;
+    const t = setTimeout(() => {
+      const els = document.querySelectorAll(".reveal");
+      const io = new IntersectionObserver(
         (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("active");
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
             }
           });
         },
-        {
-          threshold: 0.1,
-          rootMargin: "0px 0px -50px 0px",
-        }
+        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
       );
+      els.forEach((el) => io.observe(el));
+      return () => io.disconnect();
+    }, 80);
+    return () => clearTimeout(t);
+  }, [revealed]);
 
-      revealElements.forEach((el) => observer.observe(el));
+  // Lock scroll while cover is up
+  useEffect(() => {
+    document.body.style.overflow = revealed ? "" : "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [revealed]);
 
-      return () => {
-        observer.disconnect();
-      };
-    }, 100);
-
-    return () => clearTimeout(timeout);
-  }, [portalRevealed]);
-
-  // Play/Pause Background Music
-  const toggleAudio = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!audioRef.current) return;
-
-    if (audioPlaying) {
-      audioRef.current.pause();
-      setAudioPlaying(false);
-    } else {
-      audioRef.current.play().then(() => {
-        setAudioPlaying(true);
-      }).catch((err) => {
-        console.log("Audio play blocked by browser:", err);
-      });
-    }
-  };
-
-  // Open the physical envelope and play music softly
-  const handleOpenEnvelope = () => {
-    if (envelopeOpened) return;
-    setEnvelopeOpened(true);
-    
-    // Auto-play music softly on click (user interaction registered)
-    if (audioRef.current) {
-      audioRef.current.volume = 0.45;
-      audioRef.current.play().then(() => {
-        setAudioPlaying(true);
-      }).catch((e) => {
-        console.log("Audio auto-play blocked by browser. Triggerable via floating button.", e);
-      });
-    }
-
-    // Automatically transition to the portal after 1.3 seconds gorgeous 3D envelope animation
-    setTimeout(() => {
-      setPortalRevealed(true);
-    }, 1300);
-  };
-
-  // Transition from envelope to full invitation portal immediately if clicked again
-  const handleEnterPortal = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setPortalRevealed(true);
+  const openEnvelope = () => {
+    if (opened) return;
+    setOpened(true);
+    // Reveal main page after envelope opening animation
+    setTimeout(() => setRevealed(true), 1500);
   };
 
   return (
     <>
-      {/* Hidden Audio Player playing a very soft, quiet acoustic piano piece */}
-      <audio
-        ref={audioRef}
-        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"
-        loop
-        preload="auto"
-      />
-
-      {/* Floating Music Equalizer Controller */}
-      {portalRevealed && (
-        <button
-          className={`audio-player-floating ${!audioPlaying ? "muted" : ""}`}
-          onClick={toggleAudio}
-          title={audioPlaying ? "Musiqani o'chirish" : "Musiqani yoqish"}
-          aria-label="Musiqa boshqaruvi"
-        >
-          <div className="equalizer">
-            <span className="equalizer-bar"></span>
-            <span className="equalizer-bar"></span>
-            <span className="equalizer-bar"></span>
-            <span className="equalizer-bar"></span>
-          </div>
-        </button>
-      )}
-
-      {/* 1. ENVELOPE INTERACTIVE OVERLAY */}
-      <div className={`envelope-overlay ${portalRevealed ? "opened" : ""}`}>
-        {/* Floating gold dust in envelope background */}
-        <div className="ambient-particles">
-          {ambientParticles.slice(0, 12).map((p) => (
-            <div
+      {/* Floating petals (decorative backdrop) */}
+      {revealed && (
+        <div className="petals" aria-hidden="true">
+          {petals.map((p) => (
+            <span
               key={p.id}
-              className="particle"
+              className={`petal ${p.gold ? "gold" : ""}`}
               style={{
                 left: `${p.left}%`,
                 width: `${p.size}px`,
                 height: `${p.size}px`,
-                animation: `floatParticles ${p.duration}s linear infinite`,
                 animationDelay: `${p.delay}s`,
+                animationDuration: `${p.duration}s`,
+                ["--drift" as never]: `${p.drift}px`,
               }}
             />
           ))}
         </div>
+      )}
 
-        {/* 3D Realistic Physical Envelope Container */}
-        <div
-          className={`envelope-wrapper ${envelopeOpened ? "opened" : ""}`}
-          onClick={handleOpenEnvelope}
-        >
-          <div className="envelope-3d">
-            {/* Triangular Pointed Top Flap */}
-            <div className="envelope-flap-3d">
-              <div className="envelope-flap-tri"></div>
-            </div>
+      {/* COVER / ENVELOPE */}
+      <div
+        className={`cover ${revealed ? "hidden" : ""}`}
+        role="button"
+        aria-label="Taklifnomani ochish"
+        onClick={openEnvelope}
+      >
+        <div className="cover-monogram">Javohir &amp; Sevinch</div>
+        <div className="cover-eyebrow">Taklifnoma · 2026</div>
 
-            {/* Glowing physical Wax Seal sitting perfectly at fold intersection */}
-            <div className="wax-seal-wrapper-3d">
-              <div className="wax-seal-3d">
-                <span className="wax-seal-logo-3d">{"J&S"}</span>
-              </div>
-            </div>
-
-            {/* Small elegant preview card sliding out of envelope pocket */}
-            <div className="card-inside" onClick={handleEnterPortal}>
-              <span className="card-inside-title">{"Taklifnoma"}</span>
-              <h3 className="card-inside-names">{"Javohir & Sevinch"}</h3>
-              <p className="card-inside-tap">{"Kirish uchun bosing"}</p>
-            </div>
-
-            {/* Precise CSS Border Folds */}
-            <div className="envelope-fold-left-3d"></div>
-            <div className="envelope-fold-right-3d"></div>
-            <div className="envelope-fold-bottom-3d"></div>
+        <div className={`envelope ${opened ? "open" : ""}`}>
+          <div className="env-body" />
+          <div className="env-card">
+            <div className="env-card-script">Sizga</div>
+            <div className="env-card-names">Javohir &amp; Sevinch</div>
+            <div className="env-card-meta">30 · 05 · 2026</div>
+          </div>
+          <div className="env-side env-side-l" />
+          <div className="env-side env-side-r" />
+          <div className="env-pocket" />
+          <div className="env-flap" />
+          <div className="seal">
+            <span className="seal-text">J&amp;S</span>
           </div>
         </div>
 
-        <p className="open-text">
-          {!envelopeOpened ? "Ochish uchun bosing" : "Taklifnoma ochilmoqda..."}
-        </p>
+        <div className="cover-hint">{opened ? "Ochilmoqda…" : "Ochish uchun bosing"}</div>
       </div>
 
-      {/* MAIN WEBSITE PORTAL (Revealed after envelope opens and guest slides it out) */}
-      {portalRevealed && (
-        <div className="main-content-wrapper" style={{ animation: "fadeIn 1.2s ease-out forwards" }}>
-          
-          {/* 2. HERO / WELCOME SECTION */}
-          <section className="section hero-section">
-            {/* Floating gold dust particles on page */}
-            <div className="ambient-particles">
-              {ambientParticles.map((p) => (
-                <div
-                  key={p.id}
-                  className="particle"
-                  style={{
-                    left: `${p.left}%`,
-                    width: `${p.size}px`,
-                    height: `${p.size}px`,
-                    animation: `floatParticles ${p.duration}s linear infinite`,
-                    animationDelay: `${p.delay}s`,
-                  }}
-                />
-              ))}
-            </div>
-
-            <div className="reveal" style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-              <div className="floral-crest">⚜</div>
-              <span className="hero-cursive-subtitle">{"Taklifnoma"}</span>
-              <h1 className="hero-spaced-title">{"Javohir & Sevinch"}</h1>
-              
-              <div className="floral-divider" style={{ margin: "25px 0 20px 0" }}>
-                <span className="floral-line"></span>
-                <span className="floral-center">{"🌸"}</span>
-                <span className="floral-line"></span>
-              </div>
-
-              <p className="invitation-lead">{"Hurmatli mehmonlar!"}</p>
-              
-              <p className="invitation-main-body">
-                {"Sizlarni aziz farzandlarimiz lutfan hayotlarining eng hayajonli kuni — Visol Oqshomiga taklif etadi. Sizning tashrifingiz biz uchun cheksiz sharaf va quvonch bag'ishlaydi. Quvonchli kunimizda birga bo'lishingizdan mamnunmiz!"}
-              </p>
-
-              <div className="respect-block">
-                <span className="respect-label">{"Hurmat va ehtirom ila"}</span>
-                <span className="respect-value">{"Asomiddin, Yangashevalar oilasi"}</span>
-              </div>
-            </div>
-          </section>
-
-          {/* 3. DATE SPEC GRID SECTION */}
-          <section className="section specs-section">
-            <div className="reveal" style={{ width: "100%" }}>
-              <div className="specs-grid">
-                <div className="spec-card spec-card-left">
-                  <span className="spec-label">{"SANA"}</span>
-                  <span className="spec-value">{"30.05.2026"}</span>
-                  <span className="spec-sub">{"May, 2026"}</span>
-                </div>
-                <div className="spec-card spec-card-center">
-                  <span className="spec-label">{"KUN"}</span>
-                  <span className="spec-value">{"Shanba"}</span>
-                  <span className="spec-sub">{"Hafta kuni"}</span>
-                </div>
-                <div className="spec-card spec-card-right">
-                  <span className="spec-label">{"VAQT"}</span>
-                  <span className="spec-value">{"18:00"}</span>
-                  <span className="spec-sub">{"Nikoh marosimi"}</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* 4. VENUE & YANDEX MAP INTEGRATION */}
-          <section className="section" style={{ backgroundColor: "#fdfdfb" }}>
-            <div className="reveal" style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <span className="section-subtitle-cursive">{"Tantana joyi"}</span>
-              <h2 className="venue-title">{"Manzilimiz"}</h2>
-
-              <div className="floral-divider" style={{ margin: "10px 0 25px 0" }}>
-                <span className="floral-line"></span>
-                <span className="floral-center">{"⚜"}</span>
-                <span className="floral-line"></span>
-              </div>
-
-              <div className="venue-card reveal reveal-delay-1">
-                <h3 className="venue-name">{"\"Shams\" To'yxonasi"}</h3>
-                <p className="venue-address">
-                  {"Toshkent viloyati, Shams to'yxonasi."}
-                </p>
-
-                {/* Yandex Map Iframe Embed styled beautifully & fully responsive */}
-                <div className="yandex-map-responsive">
-                  <div style={{ position: "relative", overflow: "hidden", width: "100%", height: "100%" }}>
-                    <a
-                      href="https://yandex.uz/maps/org/41645530183/?utm_medium=mapframe&utm_source=maps"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: "#eee", fontSize: "12px", position: "absolute", top: "0px", zIndex: 10 }}
-                    >
-                      {"Shams"}
-                    </a>
-                    <a
-                      href="https://yandex.uz/maps/105813/tashkent-province/category/restaurant/184106394/?utm_medium=mapframe&utm_source=maps"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ color: "#eee", fontSize: "12px", position: "absolute", top: "14px", zIndex: 10 }}
-                    >
-                      {"Restoran Toshkent viloyatida"}
-                    </a>
-                    <iframe
-                      src="https://yandex.uz/map-widget/v1/?ll=69.511612%2C41.407467&mode=search&oid=41645530183&ol=biz&z=16.54"
-                      width="100%"
-                      height="100%"
-                      frameBorder="0"
-                      allowFullScreen={true}
-                      style={{ position: "relative" }}
-                    ></iframe>
-                  </div>
-                </div>
-
-                {/* Yandex App Routing Button - builds directions from guest's current location */}
-                <a
-                  href="https://yandex.uz/maps/-/CPs6bVMu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="yandex-nav-btn"
-                >
-                  <svg className="yandex-nav-btn-icon" viewBox="0 0 24 24">
-                    <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
-                  </svg>
-                  {"Yandex Navigatorda yo'nalish olish"}
-                </a>
-              </div>
-            </div>
-          </section>
-
-          {/* 5. FOOTER SECTION */}
-          <footer className="footer">
+      {/* MAIN PAGE */}
+      {revealed && (
+        <main className="page">
+          {/* HERO */}
+          <section className="section hero">
             <div className="reveal">
-              <h2 className="footer-names">{"Javohir & Sevinch"}</h2>
-              <p className="footer-tagline">{"Visol Oqshomi"}</p>
-              
-              <div className="floral-divider" style={{ margin: "20px auto 25px auto" }}>
-                <span className="floral-line"></span>
-                <span className="floral-center" style={{ fontSize: "1rem", color: "var(--color-gold-primary)" }}>{"❤"}</span>
-                <span className="floral-line"></span>
+              <div className="crest">
+                <span className="crest-inner">J&amp;S</span>
               </div>
+            </div>
 
-              <p style={{ fontSize: "0.85rem", opacity: 0.7, maxWidth: "320px", margin: "0 auto", lineHeight: "1.7", color: "var(--color-text-secondary)" }}>
-                {"Tashrifingiz uchun oldindan samimiy minnatdorchilik bildiramiz!"}
+            <div className="reveal d1">
+              <div className="eyebrow">Bizning to&apos;yimiz</div>
+            </div>
+
+            <div className="reveal d2">
+              <h1 className="names">
+                Javohir
+                <span className="amp">&amp;</span>
+                Sevinch
+              </h1>
+            </div>
+
+            <div className="reveal d3">
+              <div className="divider">
+                <span className="line" />
+                <span className="ornament" />
+                <span className="line" />
+              </div>
+            </div>
+
+            <div className="reveal d3">
+              <div className="hero-greeting">Assalomu alaykum!</div>
+              <div className="hero-lead">Hurmatli mehmonlar</div>
+            </div>
+
+            <div className="reveal d4">
+              <p className="hero-body">
+                Sizni aziz farzandlarimiz Javohir va Sevinchning nikoh to&apos;ylari munosabati bilan
+                bo&apos;lib o&apos;tadigan visol oqshomiga taklif etamiz. Quvonchli kunimizda
+                hurmat va ehtirom ila kutib qolamiz.
               </p>
-              
-              <p className="footer-copyright">
-                {"© 2026. Barcha huquqlar himoyalangan."}
+            </div>
+
+            <div className="reveal d4">
+              <div className="signature">
+                <div className="signature-label">Hurmat va ehtirom ila</div>
+                <div className="signature-name">Yangashevalar oilasi</div>
+              </div>
+            </div>
+
+            <div className="reveal d4">
+              <div className="scroll-cue">
+                <span>Pastga</span>
+                <div className="arrow" />
+              </div>
+            </div>
+          </section>
+
+          {/* COUNTDOWN */}
+          <section className="section countdown-section">
+            <div className="reveal">
+              <div className="section-eyebrow">Kutib qolamiz</div>
+              <h2 className="section-title">Toʻyimizgacha</h2>
+            </div>
+
+            <div className="reveal d1">
+              <div className="divider">
+                <span className="line" />
+                <span className="ornament" />
+                <span className="line" />
+              </div>
+            </div>
+
+            <div className="reveal d2" style={{ width: "100%" }}>
+              <div className="countdown" role="timer" aria-live="polite">
+                <CountCell n={time.days} label="Kun" />
+                <CountCell n={time.hours} label="Soat" />
+                <CountCell n={time.minutes} label="Daq" />
+                <CountCell n={time.seconds} label="Son" />
+              </div>
+            </div>
+          </section>
+
+          {/* DETAILS */}
+          <section className="section details">
+            <div className="reveal">
+              <div className="section-eyebrow">Marosim</div>
+              <h2 className="section-title">Tafsilotlar</h2>
+            </div>
+
+            <div className="reveal d1">
+              <div className="divider">
+                <span className="line" />
+                <span className="ornament" />
+                <span className="line" />
+              </div>
+            </div>
+
+            <div className="reveal d2" style={{ width: "100%" }}>
+              <div className="detail-stack">
+                <DetailRow
+                  label="Sana"
+                  value="30-may, 2026 — Shanba"
+                  icon={
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="5" width="18" height="16" rx="2" />
+                      <path d="M8 3v4M16 3v4M3 10h18" />
+                    </svg>
+                  }
+                />
+                <DetailRow
+                  label="Vaqt"
+                  value="18:00 — Visol oqshomi"
+                  icon={
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 7v5l3 2" />
+                    </svg>
+                  }
+                />
+                <DetailRow
+                  label="Manzil"
+                  value="Shams to'yxonasi"
+                  icon={
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 22s7-7.16 7-12a7 7 0 1 0-14 0c0 4.84 7 12 7 12Z" />
+                      <circle cx="12" cy="10" r="2.5" />
+                    </svg>
+                  }
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* VENUE */}
+          <section className="section venue">
+            <div className="reveal">
+              <div className="section-eyebrow">Tashrif</div>
+              <h2 className="section-title">Toʻy joyi</h2>
+            </div>
+
+            <div className="reveal d1">
+              <div className="divider">
+                <span className="line" />
+                <span className="ornament" />
+                <span className="line" />
+              </div>
+            </div>
+
+            <div className="reveal d2" style={{ width: "100%" }}>
+              <div className="venue-card">
+                <div className="map-frame">
+                  <iframe
+                    src="https://yandex.uz/map-widget/v1/?ll=69.511612%2C41.407467&mode=search&oid=41645530183&ol=biz&z=16"
+                    allowFullScreen
+                    loading="lazy"
+                    title="Shams to'yxonasi"
+                  />
+                </div>
+                <div className="venue-info">
+                  <div className="venue-name">&ldquo;Shams&rdquo; to&apos;yxonasi</div>
+                  <p className="venue-address">
+                    Toshkent viloyati, Olmaliq tumani,
+                    <br />
+                    Baytqo&apos;rg&apos;on
+                  </p>
+                  <a
+                    className="btn"
+                    href="https://yandex.uz/maps/-/CPs6bVMu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 11l18-8-8 18-2-8-8-2Z" />
+                    </svg>
+                    <span>Yo&apos;nalish olish</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* CLOSING */}
+          <footer className="section closing">
+            <div className="reveal">
+              <div className="closing-script">Kutib qolamiz</div>
+              <p className="closing-message">
+                Tashrifingiz biz uchun cheksiz quvonch va sharaf. Bu unutilmas kunda
+                yonimizda bo&apos;lganingiz uchun oldindan minnatdormiz.
               </p>
+              <div className="divider" style={{ margin: "26px auto 0" }}>
+                <span className="line" />
+                <span className="ornament" />
+                <span className="line" />
+              </div>
+              <div className="closing-tag">Javohir &amp; Sevinch · 30.05.2026</div>
             </div>
           </footer>
-
-        </div>
+        </main>
       )}
     </>
+  );
+}
+
+function CountCell({ n, label }: { n: number; label: string }) {
+  return (
+    <div className="cd-cell">
+      <span className="cd-num">{String(n).padStart(2, "0")}</span>
+      <span className="cd-label">{label}</span>
+    </div>
+  );
+}
+
+function DetailRow({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div className="detail-row">
+      <div className="detail-icon">{icon}</div>
+      <div className="detail-text">
+        <span className="detail-label">{label}</span>
+        <span className="detail-value">{value}</span>
+      </div>
+    </div>
   );
 }
