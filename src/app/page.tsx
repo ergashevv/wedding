@@ -122,14 +122,14 @@ export default function WeddingInvitation() {
         aria-label="Taklifnomani ochish"
         onClick={openEnvelope}
       >
-        <div className="cover-monogram">Javohir &amp; Sevinch</div>
+        <div className="cover-monogram">Javoxir &amp; Sevinch</div>
         <div className="cover-eyebrow">Taklifnoma · 2026</div>
 
         <div className={`envelope ${opened ? "open" : ""}`}>
           <div className="env-body" />
           <div className="env-card">
             <div className="env-card-script">Sizga</div>
-            <div className="env-card-names">Javohir &amp; Sevinch</div>
+            <div className="env-card-names">Javoxir &amp; Sevinch</div>
             <div className="env-card-meta">30 · 05 · 2026</div>
           </div>
           <div className="env-side env-side-l" />
@@ -161,7 +161,7 @@ export default function WeddingInvitation() {
 
             <div className="reveal d2">
               <h1 className="names">
-                Javohir
+                Javoxir
                 <span className="amp">&amp;</span>
                 Sevinch
               </h1>
@@ -182,7 +182,7 @@ export default function WeddingInvitation() {
 
             <div className="reveal d4">
               <p className="hero-body">
-                Sizni aziz farzandlarimiz Javohir va Sevinchning nikoh to&apos;ylari munosabati bilan
+                Sizni aziz farzandlarimiz Javoxir va Sevinchning nikoh to&apos;ylari munosabati bilan
                 bo&apos;lib o&apos;tadigan visol oqshomiga taklif etamiz. Quvonchli kunimizda
                 hurmat va ehtirom ila kutib qolamiz.
               </p>
@@ -191,7 +191,7 @@ export default function WeddingInvitation() {
             <div className="reveal d4">
               <div className="signature">
                 <div className="signature-label">Hurmat va ehtirom ila</div>
-                <div className="signature-name">Yangashevalar oilasi</div>
+                <div className="signature-name">Yangashevlar oilasi</div>
               </div>
             </div>
 
@@ -340,7 +340,7 @@ export default function WeddingInvitation() {
                 <span className="ornament" />
                 <span className="line" />
               </div>
-              <div className="closing-tag">Javohir &amp; Sevinch · 30.05.2026</div>
+              <div className="closing-tag">Javoxir &amp; Sevinch · 30.05.2026</div>
             </div>
           </footer>
         </main>

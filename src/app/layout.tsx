@@ -24,7 +24,7 @@ const greatVibes = Great_Vibes({
 });
 
 export const metadata: Metadata = {
-  title: "Javohir & Sevinch • Taklifnoma",
+  title: "Javoxir & Sevinch • Taklifnoma",
   description: "Sizni 2026-yil 30-may kuni bo'lib o'tadigan nikoh to'yimizning Visol oqshomi marosimiga taklif etamiz.",
 };
 
