@@ -14,6 +14,7 @@ interface Particle {
 export default function WeddingInvitation() {
   // Application states
   const [envelopeOpened, setEnvelopeOpened] = useState<boolean>(false);
+  const [portalRevealed, setPortalRevealed] = useState<boolean>(false);
   const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
   const [ambientParticles, setAmbientParticles] = useState<Particle[]>([]);
 
@@ -34,7 +35,7 @@ export default function WeddingInvitation() {
 
   // Initialize IntersectionObserver for smooth scroll animations
   useEffect(() => {
-    if (!envelopeOpened) return;
+    if (!portalRevealed) return;
 
     const timeout = setTimeout(() => {
       const revealElements = document.querySelectorAll(".reveal");
@@ -61,7 +62,7 @@ export default function WeddingInvitation() {
     }, 100);
 
     return () => clearTimeout(timeout);
-  }, [envelopeOpened]);
+  }, [portalRevealed]);
 
   // Play/Pause Background Music
   const toggleAudio = () => {
@@ -80,7 +81,10 @@ export default function WeddingInvitation() {
   };
 
   // Open the physical envelope
-  const handleOpenEnvelope = () => {
+  const handleOpenEnvelope = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (envelopeOpened) return;
+    
     setEnvelopeOpened(true);
     
     // Auto-play music softly on click (user interaction registered)
@@ -94,6 +98,13 @@ export default function WeddingInvitation() {
     }
   };
 
+  // Smoothly enter the full invitation website
+  const handleEnterPortal = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!envelopeOpened) return;
+    setPortalRevealed(true);
+  };
+
   return (
     <>
       {/* Hidden Audio Player playing a very soft, quiet acoustic piano piece */}
@@ -105,7 +116,7 @@ export default function WeddingInvitation() {
       />
 
       {/* Floating Bright Music Equalizer Controller */}
-      {envelopeOpened && (
+      {portalRevealed && (
         <button
           className={`audio-player-floating ${!audioPlaying ? "muted" : ""}`}
           onClick={toggleAudio}
@@ -122,7 +133,7 @@ export default function WeddingInvitation() {
       )}
 
       {/* 1. ENVELOPE INTERACTIVE OVERLAY */}
-      <div className={`envelope-overlay ${envelopeOpened ? "opened" : ""}`}>
+      <div className={`envelope-overlay ${portalRevealed ? "opened" : ""}`}>
         {/* Floating gold dust in envelope background */}
         <div className="ambient-particles">
           {ambientParticles.slice(0, 12).map((p) => (
@@ -140,29 +151,51 @@ export default function WeddingInvitation() {
           ))}
         </div>
 
-        {/* Breathtaking Luxury Cover Content */}
-        <div className="cover-content">
-          {/* Central Double Gold Ring Crest */}
-          <div className="cover-crest">
-            <span className="cover-crest-initials">{"J&S"}</span>
-          </div>
-
-          {/* Luxury Calligraphy and Spaced Typography */}
-          <span className="cover-title">{"Taklifnoma"}</span>
-          <h2 className="cover-names">{"Javohir & Sevinch"}</h2>
-          <p className="cover-date">{"30.05.2026 • Visol Oqshomi"}</p>
-
-          {/* Pulse Golden Action Button */}
-          <button className="cover-open-btn" onClick={handleOpenEnvelope}>
-            {"Taklifnomani ochish"}
-          </button>
-          
-          <p className="open-text">{"Kirish uchun bosing"}</p>
+        {/* Calligraphy Header Above the Envelope */}
+        <div className="envelope-header-3d">
+          <h1>{"Taklifnoma"}</h1>
+          <p>{"Javohir & Sevinch"}</p>
         </div>
+
+        {/* 3D Realistic Physical Envelope Container */}
+        <div
+          className={`envelope-wrapper ${envelopeOpened ? "opened" : ""}`}
+          onClick={handleOpenEnvelope}
+        >
+          <div className="envelope-3d">
+            {/* Triangular Pointed Top Flap */}
+            <div className="envelope-flap-3d">
+              <div className="envelope-flap-tri"></div>
+            </div>
+
+            {/* Glowing physical Wax Seal sitting perfectly at fold intersection */}
+            <div className="wax-seal-wrapper-3d">
+              <div className="wax-seal-3d">
+                <span className="wax-seal-logo-3d">{"J&S"}</span>
+              </div>
+            </div>
+
+            {/* Textured Invitation Card sliding out of envelope pocket */}
+            <div className="card-inside" onClick={handleEnterPortal}>
+              <span className="card-inside-title">{"Taklifnoma"}</span>
+              <h3 className="card-inside-names">{"Javohir & Sevinch"}</h3>
+              <p className="card-inside-tap">{"Kirish uchun bosing"}</p>
+            </div>
+
+            {/* Precise CSS Border Folds */}
+            <div className="envelope-fold-left-3d"></div>
+            <div className="envelope-fold-right-3d"></div>
+            <div className="envelope-fold-bottom-3d"></div>
+          </div>
+        </div>
+
+        <p className="open-text">
+          {!envelopeOpened ? "Ochish uchun bosing" : "Kirish uchun yuqoridagi kartani bosing"}
+        </p>
       </div>
 
-      {/* MAIN WEBSITE PORTAL (Revealed after envelope opens) */}
-      {envelopeOpened && (
+      {/* MAIN WEBSITE PORTAL (Revealed after envelope opens and guest slides it out) */}
+      {portalRevealed && (
         <div className="main-content-wrapper" style={{ animation: "fadeIn 1.2s ease-out forwards" }}>
           
           {/* 2. HERO / WELCOME SECTION */}
